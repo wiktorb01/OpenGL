@@ -1,7 +1,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+
 
 #include "VBO.h"
 #include "VAO.h"
@@ -73,6 +77,7 @@ int main()
         0,2,3
     };
 
+    
 
     VAO VAO;
     VBO VBO(vertices, sizeof(vertices));
@@ -84,8 +89,6 @@ int main()
     EBO.Unbind();
     VAO.Unbind();
 
-    // as we only have a single shader, we could also just activate our shader once beforehand if we want to 
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -93,7 +96,6 @@ int main()
         // input
         // -----
         processInput(window);
-
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -104,6 +106,15 @@ int main()
         texture0.Bind();
         texture1.Bind();
         shader.setFloat("miks", mix);
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::scale(trans, glm::vec3(sin((float)glfwGetTime()), sin((float)glfwGetTime() ) , sin((float)glfwGetTime() ) ));
+        shader.setMat4("transform", trans);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        trans = glm::scale(trans, glm::vec3(cos((float)glfwGetTime() ), cos((float)glfwGetTime() ) , cos((float)glfwGetTime() ) ));
+        shader.setMat4("transform", trans);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
