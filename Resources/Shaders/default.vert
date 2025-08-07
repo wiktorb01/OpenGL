@@ -13,13 +13,12 @@ out vec2 TexCoord;
 
 // Transformation matrices provided by the application
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 camMatrix;
 
 void main()
 {
     // Compute the final vertex position in clip space
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = camMatrix * model * vec4(aPos, 1.0);
     // Pass color to fragment shader
     ourColor = aColor;
     // Pass texture coordinates to fragment shader

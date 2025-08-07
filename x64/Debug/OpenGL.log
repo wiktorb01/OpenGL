@@ -1,7 +1,9 @@
-﻿  main.cpp
-C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(162,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(249,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(250,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(267,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(268,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  Camera.cpp
+C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\Libraries\Classes\Camera.cpp(61,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\Libraries\Classes\Camera.cpp(62,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\Libraries\Classes\Camera.cpp(77,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\Libraries\Classes\Camera.cpp(78,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+C:\Users\StudyWB\Documents\Projects\OpenGL\OpenGL\source\main.cpp(155,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
   OpenGL.vcxproj -> C:\Users\StudyWB\Documents\Projects\OpenGL\x64\Debug\OpenGL.exe

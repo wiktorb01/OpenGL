@@ -1,11 +1,6 @@
 // main.cpp - Entry point for the OpenGL application
 // This file sets up the OpenGL context, loads shaders, textures, and handles rendering and input.
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 
@@ -14,11 +9,10 @@
 #include "EBO.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 // Callback function for window resize events
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-// Callback function for mouse scroll events
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 // Handles keyboard and mouse input
 void processInput(GLFWwindow* window);
 
@@ -26,12 +20,9 @@ void processInput(GLFWwindow* window);
 unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
 
-// Camera and view settings
-float fov = 60.0f;
-float pitch=0.0f, yaw=-90.0f;
-float lastX=0.0f, lastY=0.0f;
-float deltaTime = 0.0f; // Time between current frame and last frame
-float lastFrame = 0.0f; // Time of last frame
+// Camera and view settings 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 float mix = 0.5f; // Texture mix value
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -119,7 +110,6 @@ int main()
 
     // Set callback functions for window resize and scroll
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetScrollCallback(window, scroll_callback);
 
     // Load OpenGL function pointers using GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -154,28 +144,22 @@ int main()
     //EBO.Unbind();
     VAO.Unbind();
 
+    Camera camera(SCR_WIDTH, SCR_HEIGHT, 60.0f, glm::vec3(0.0f, 0.0f, 3.0f));
+
     // Enable depth testing for 3D rendering
     glEnable(GL_DEPTH_TEST);
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
-        // Handle input
-        processInput(window);
         // Calculate frame timing
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        // Update camera direction based on pitch and yaw
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        cameraFront = glm::normalize(direction);
-        // Set view and projection matrices in the shader
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        shader.setMat4("view", view);
-        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)800.0f / (float)600.0f, 0.1f, 100.0f);
-        shader.setMat4("projection", projection);
+        // Handle input
+        processInput(window);
+        camera.Inputs(window, deltaTime);
+        camera.updateMatrix(0.1f, 100.0f);
+        camera.Matrix(shader, "camMatrix");
         // Clear the color and depth buffers
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -222,63 +206,9 @@ void processInput(GLFWwindow* window)
         if(mix>0.0) mix -= 0.01f;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         if(mix<1.0)mix += 0.01f;
-    float cameraSpeed = 2.5f * deltaTime; // Camera movement speed
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        cameraPos += cameraUp * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        cameraPos -= cameraUp * cameraSpeed;
-    // Mouse rotation for camera
-    const float sensitivity = 0.1f;
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-    {
-        double mouseX, mouseY;
-        glfwGetCursorPos(window, &mouseX, &mouseY);
-        // Initialize last mouse position if cursor was normal
-        if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
-        {
-            lastX = mouseX;
-            lastY = mouseY;
-        }
-        // Disable cursor for camera control
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        // Calculate mouse movement offsets
-        float offsetX = (float)(mouseY - lastY) * sensitivity;
-        float offsetY = (float)(mouseX - lastX) * sensitivity;
-        pitch -= offsetX;
-        yaw += offsetY;
-        // Prevent flipping at extreme angles
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
-        // Update last mouse position
-        lastX = mouseX;
-        lastY = mouseY;
-    }
-    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
-    {
-        // Re-enable cursor when mouse button is released
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+    
 }
 
-// Callback for mouse scroll to zoom in/out by changing field of view
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 60.0f)
-        fov = 60.0f;
-}
 
 // Callback for window resize to update viewport and window size variables
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

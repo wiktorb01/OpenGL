@@ -151,6 +151,7 @@
     <None Include="Resources\Shaders\default.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Classes\Camera.cpp" />
     <ClCompile Include="Libraries\Classes\EBO.cpp" />
     <ClCompile Include="Libraries\glad.c" />
     <ClCompile Include="Libraries\stb.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Libraries\Classes\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\Classes\Camera.h" />
     <ClInclude Include="Libraries\Classes\EBO.h" />
     <ClInclude Include="Libraries\Classes\VBO.h" />
     <ClInclude Include="Libraries\Classes\VAO.h" />
