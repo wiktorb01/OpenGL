@@ -11,14 +11,14 @@
 class Camera
 {
 public:
-	glm::vec3 camPos;
+	glm::vec3 camPos = glm::vec3(0.0f,0.0f,0.0f);
 	glm::vec3 Direction = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 camMatrix = glm::mat4(1.0f);
 
 	int width, height;
 
-	float pitch = 0.0f, yaw = -90.0f;
+
 	float lastX = 0.0f, lastY = 0.0f;
 	float deltaTime = 0.0f;
 	
