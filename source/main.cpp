@@ -209,6 +209,7 @@ int main()
         shader.setFloat("miks", mix);
         shader.setVec3("lightColor", lightColor);
         shader.setVec3("lightPos", lightPos);
+        shader.setVec3("viewPos", camera.camPos);
         // Draw 10 cubes with different positions and rotations
         for (unsigned int i = 0; i < 10; i++)
         {
