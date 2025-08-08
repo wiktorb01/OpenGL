@@ -14,7 +14,8 @@ public:
 	glm::vec3 camPos = glm::vec3(0.0f,0.0f,0.0f);
 	glm::vec3 Direction = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::mat4 camMatrix = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
 
 	int width, height;
 
@@ -29,7 +30,7 @@ public:
 	Camera(unsigned int width, unsigned int height, float FOV, glm::vec3 position);
 
 	void updateMatrix(float nearPlane, float farPlane);
-	void Matrix(Shader& shader, const char* uniform);
+	void Matrix(Shader& shader, const char* uniform, const char* uniform1);
 	void Inputs(GLFWwindow* window, float deltaTime);
 };
 

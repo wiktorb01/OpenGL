@@ -205,7 +205,7 @@ int main()
         camera.updateMatrix(0.1f, 100.0f);
 
         shader.Activate();
-        camera.Matrix(shader, "camMatrix");
+        camera.Matrix(shader, "view", "projection");
         VAO1.Bind();
         texture0.Bind();
         texture1.Bind();
@@ -231,7 +231,7 @@ int main()
         lightVAO.Bind();
         lightShader.setMat4("lightModel", lightModel);
         lightShader.setVec3("lightColor", lightColor);
-        camera.Matrix(lightShader, "camMatrix");
+        camera.Matrix(lightShader, "view", "projection");
         glDrawElements(GL_TRIANGLES, sizeof(lightIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
         // Swap buffers and poll IO events
         glfwSwapBuffers(window);

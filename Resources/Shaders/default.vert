@@ -13,19 +13,23 @@ out vec3 ourColor;
 out vec2 TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
+out vec3 lightPosition;
 
 // Transformation matrices provided by the application
 uniform mat4 model;
-uniform mat4 camMatrix;
+uniform mat4 view;
+uniform mat4 projection;
+uniform vec3 lightPos;
 
 void main()
 {
     // Compute the final vertex position in clip space
-    gl_Position = camMatrix * model * vec4(aPos, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
     // Pass color to fragment shader
     ourColor = aColor;
     // Pass texture coordinates to fragment shader
     TexCoord = aTexCoord;
-    Normal = vec3(model * vec4(aNormal, 0.0f));
-    FragPos = vec3(model * vec4(aPos, 1.0f));
+    Normal = vec3(view * model * vec4(aNormal, 0.0f));
+    FragPos = vec3(view * model * vec4(aPos, 1.0f));
+    lightPosition = vec3(view * vec4(lightPos, 1.0f));
 }

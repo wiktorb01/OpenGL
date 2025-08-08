@@ -13,21 +13,20 @@ Camera::Camera(unsigned int width,unsigned int height, float FOV, glm::vec3 posi
 // Sets the combined projection and view matrix in the shader
 void Camera::updateMatrix(float nearPlane, float farPlane)
 {
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
+    projection = glm::mat4(1.0f);
 
     // Create view matrix using camera position and orientation
     view = glm::lookAt(camPos, camPos + Direction, camUp);
     // Create projection matrix using perspective
     projection = glm::perspective(glm::radians(FOV), (float)width / height, nearPlane, farPlane);
-
-    camMatrix = projection * view; // Combine projection and view matrices
 }
 
 // Updates the camera matrix in the shader
-void Camera::Matrix(Shader& shader, const char* uniform)
+void Camera::Matrix(Shader& shader, const char* uniform, const char* uniform1)
 {
-	shader.setMat4(uniform, camMatrix);
+	shader.setMat4(uniform, view);
+    shader.setMat4(uniform1, projection);
 }
 
 void Camera::Inputs(GLFWwindow* window, float deltaTime)
