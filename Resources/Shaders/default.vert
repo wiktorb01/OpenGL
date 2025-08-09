@@ -26,7 +26,7 @@ void main()
     gl_Position = projection * view * model * vec4(aPos, 1.0);
     FragPos = vec3(view * model * vec4(aPos, 1.0));
     Normal = mat3(transpose(inverse(view * model))) * aNormal;
-    lightPos = vec3(view * vec4(lightPosition, 1.0)); // Transform world-space light position to view-space light position
+    lightPos = vec3(view * vec4(lightPosition, 1.0));
 
     ourColor = aColor;
     TexCoord = aTexCoord;

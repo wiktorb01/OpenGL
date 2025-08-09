@@ -23,7 +23,6 @@ unsigned int SCR_HEIGHT = 600;
 // Camera and view settings 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-float mix = 0.5f; // Texture mix value
 
 // Vertex data for a cube (positions, colors, texture coordinates)
 float vertices[] = {
@@ -198,13 +197,12 @@ int main()
     Shader shader("./Resources/Shaders/default.vert", "./Resources/Shaders/default.frag");
     shader.Activate();
     // Load and bind textures
-    Texture texture0("./Resources/Textures/container.jpg", 0);
-    Texture texture1("./Resources/Textures/awesomeface.png", 1);
+    Texture texture0("./Resources/Textures/container2.png", 0);
+    Texture texture1("./Resources/Textures/container2_specular.png", 1);
+    shader.setInt("material.diffuse", 0);
+    shader.setInt("material.specular", 1);
     texture0.useTex(shader, "texture0");
-    texture1.useTex(shader, "texture1");
-
-    
-
+    glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, -2.0f);
     shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
 
@@ -243,7 +241,7 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
         // Calculate frame timing
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         // Handle input
@@ -255,45 +253,30 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 
-        glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, -2.0f);
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, lightPos);
 
 
         camera.updateMatrix(0.1f, 100.0f);
 
         shader.Activate();
+        // light properties
+        shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        // material properties
+        shader.setFloat("material.shininess", 64.0f);
 
-        glm::vec3 lightColor;
-        lightColor.x = sin((glfwGetTime() * 2.0f)/8);
-        lightColor.y = sin((glfwGetTime() * 0.7f)/8);
-        lightColor.z = sin((glfwGetTime() * 1.3f)/8);
-
-        glm::vec3 diffuseColor = lightColor;
-        glm::vec3 ambientColor = diffuseColor;
-
-        shader.setVec3("light.ambient", ambientColor);
-        shader.setVec3("light.diffuse", diffuseColor);
         camera.Matrix(shader, "view", "projection");
+        shader.setVec3("lightPosition", lightPos);
+
         VAO1.Bind();
         texture0.Bind();
         texture1.Bind();
-        shader.setFloat("miks", mix);
-        shader.setVec3("lightColor", lightColor);
-        shader.setVec3("lightPosition", lightPos);
         // Draw 10 cubes with different positions and rotations
         for (unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            float angle = i * 20.0f;
-            angle += (float)glfwGetTime() * 25.0f;
-            //model = glm::rotate(model,  glm::radians(angle), glm::normalize(glm::vec3((i+1)*1.0f, (i + 1) * 0.3f, (i + 1) * 0.5f)));
             shader.setMat4("model", model);
-            shader.setVec3("material.ambient", materialAmbient[i]);
-            shader.setVec3("material.diffuse", materialDiffuse[i]);
-            shader.setVec3("material.specular", materialSpecular[i]);
-            shader.setFloat("material.shininess", materialShininess[i]);
             // Draw the cube using glDrawArrays
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -301,8 +284,11 @@ int main()
         // Light
         lightShader.Activate();
         lightVAO.Bind();
+
+        glm::mat4 lightModel = glm::mat4(1.0f);
+        lightModel = glm::translate(lightModel, lightPos);
         lightShader.setMat4("lightModel", lightModel);
-        lightShader.setVec3("lightColor", lightColor);
+
         camera.Matrix(lightShader, "view", "projection");
         glDrawElements(GL_TRIANGLES, sizeof(lightIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
         // Swap buffers and poll IO events
@@ -324,10 +310,6 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        if(mix>0.0) mix -= 0.01f;
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        if(mix<1.0)mix += 0.01f;
     
 }
 
