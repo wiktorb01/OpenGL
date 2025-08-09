@@ -106,6 +106,62 @@ GLuint lightIndices[] =
     2,3,6, 3,6,7
 };
 
+// Materials - Ambient components (RGB)
+glm::vec3 materialAmbient[] = {
+    glm::vec3(0.0215f, 0.1745f, 0.0215f),      // emerald
+    glm::vec3(0.135f, 0.2225f, 0.1575f),       // jade
+    glm::vec3(0.05375f, 0.05f, 0.06625f),      // obsidian
+    glm::vec3(0.25f, 0.20725f, 0.20725f),      // pearl
+    glm::vec3(0.1745f, 0.01175f, 0.01175f),    // ruby
+    glm::vec3(0.1f, 0.18725f, 0.1745f),        // turquoise
+    glm::vec3(0.329412f, 0.223529f, 0.027451f), // brass
+    glm::vec3(0.2125f, 0.1275f, 0.054f),       // bronze
+    glm::vec3(0.25f, 0.25f, 0.25f),            // chrome
+    glm::vec3(0.19125f, 0.0735f, 0.0225f)      // copper
+};
+
+// Materials - Diffuse components (RGB)
+glm::vec3 materialDiffuse[] = {
+    glm::vec3(0.07568f, 0.61424f, 0.07568f),    // emerald
+    glm::vec3(0.54f, 0.89f, 0.63f),             // jade
+    glm::vec3(0.18275f, 0.17f, 0.22525f),       // obsidian
+    glm::vec3(1.0f, 0.829f, 0.829f),            // pearl
+    glm::vec3(0.61424f, 0.04136f, 0.04136f),    // ruby
+    glm::vec3(0.396f, 0.74151f, 0.69102f),      // turquoise
+    glm::vec3(0.780392f, 0.568627f, 0.113725f), // brass
+    glm::vec3(0.714f, 0.4284f, 0.18144f),       // bronze
+    glm::vec3(0.4f, 0.4f, 0.4f),                // chrome
+    glm::vec3(0.7038f, 0.27048f, 0.0828f)       // copper
+};
+
+// Materials - Specular components (RGB)
+glm::vec3 materialSpecular[] = {
+    glm::vec3(0.633f, 0.727811f, 0.633f),       // emerald
+    glm::vec3(0.316228f, 0.316228f, 0.316228f), // jade
+    glm::vec3(0.332741f, 0.328634f, 0.346435f), // obsidian
+    glm::vec3(0.296648f, 0.296648f, 0.296648f), // pearl
+    glm::vec3(0.727811f, 0.626959f, 0.626959f), // ruby
+    glm::vec3(0.297254f, 0.30829f, 0.306678f),  // turquoise
+    glm::vec3(0.992157f, 0.941176f, 0.807843f), // brass
+    glm::vec3(0.393548f, 0.271906f, 0.166721f), // bronze
+    glm::vec3(0.774597f, 0.774597f, 0.774597f), // chrome
+    glm::vec3(0.256777f, 0.137622f, 0.086014f)  // copper
+};
+
+// Materials - Shininess values
+float materialShininess[] = {
+    76.8f,        // emerald (0.6 * 128)
+    12.8f,        // jade (0.1 * 128)
+    38.4f,        // obsidian (0.3 * 128)
+    11.264f,      // pearl (0.088 * 128)
+    76.8f,        // ruby (0.6 * 128)
+    12.8f,        // turquoise (0.1 * 128)
+    27.8974f,     // brass (0.21794872 * 128)
+    25.6f,        // bronze (0.2 * 128)
+    76.8f,        // chrome (0.6 * 128)
+    12.8f         // copper (0.1 * 128)
+};
+
 int main()
 {
     // Initialize GLFW and configure OpenGL context version
@@ -147,6 +203,10 @@ int main()
     texture0.useTex(shader, "texture0");
     texture1.useTex(shader, "texture1");
 
+    
+
+    shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
 
     // Create VAO and VBO, and link vertex attributes
     VAO VAO1;
@@ -172,10 +232,8 @@ int main()
     lightVBO.Unbind();
     lightEBO.Unbind();
     lightShader.Activate();
-   
     
     
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 
     Camera camera(SCR_WIDTH, SCR_HEIGHT, 60.0f, glm::vec3(0.0f, 0.0f, 3.0f));
 
@@ -197,7 +255,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 
-        glm::vec3 lightPos = glm::vec3(0.0f, sin(currentFrame/4) * 4.0f, -2.0f);
+        glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, -2.0f);
         glm::mat4 lightModel = glm::mat4(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
 
@@ -205,14 +263,24 @@ int main()
         camera.updateMatrix(0.1f, 100.0f);
 
         shader.Activate();
+
+        glm::vec3 lightColor;
+        lightColor.x = sin((glfwGetTime() * 2.0f)/8);
+        lightColor.y = sin((glfwGetTime() * 0.7f)/8);
+        lightColor.z = sin((glfwGetTime() * 1.3f)/8);
+
+        glm::vec3 diffuseColor = lightColor;
+        glm::vec3 ambientColor = diffuseColor;
+
+        shader.setVec3("light.ambient", ambientColor);
+        shader.setVec3("light.diffuse", diffuseColor);
         camera.Matrix(shader, "view", "projection");
         VAO1.Bind();
         texture0.Bind();
         texture1.Bind();
         shader.setFloat("miks", mix);
         shader.setVec3("lightColor", lightColor);
-        shader.setVec3("lightPos", lightPos);
-        shader.setVec3("viewPos", camera.camPos);
+        shader.setVec3("lightPosition", lightPos);
         // Draw 10 cubes with different positions and rotations
         for (unsigned int i = 0; i < 10; i++)
         {
@@ -220,8 +288,12 @@ int main()
             model = glm::translate(model, cubePositions[i]);
             float angle = i * 20.0f;
             angle += (float)glfwGetTime() * 25.0f;
-            model = glm::rotate(model,  glm::radians(angle), glm::normalize(glm::vec3((i+1)*1.0f, (i + 1) * 0.3f, (i + 1) * 0.5f)));
+            //model = glm::rotate(model,  glm::radians(angle), glm::normalize(glm::vec3((i+1)*1.0f, (i + 1) * 0.3f, (i + 1) * 0.5f)));
             shader.setMat4("model", model);
+            shader.setVec3("material.ambient", materialAmbient[i]);
+            shader.setVec3("material.diffuse", materialDiffuse[i]);
+            shader.setVec3("material.specular", materialSpecular[i]);
+            shader.setFloat("material.shininess", materialShininess[i]);
             // Draw the cube using glDrawArrays
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
