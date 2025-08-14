@@ -201,9 +201,7 @@ int main()
     Texture texture1("./Resources/Textures/container2_specular.png", 1);
     shader.setInt("material.diffuse", 0);
     shader.setInt("material.specular", 1);
-    texture0.useTex(shader, "texture0");
     glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, -2.0f);
-    shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
 
     // Create VAO and VBO, and link vertex attributes
@@ -247,26 +245,28 @@ int main()
         // Handle input
         processInput(window);
         camera.Inputs(window, deltaTime);
+        camera.updateMatrix(0.1f, 100.0f);
 
         // Clear the color and depth buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-
-
-
-        camera.updateMatrix(0.1f, 100.0f);
-
         shader.Activate();
         // light properties
         shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        shader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
         shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        shader.setVec3("light.position", 0.0f, 0.0f, -0.1f);
+        shader.setVec3("light.direction", 0.0f, 0.0f, -1.0f);
+        shader.setFloat("light.innerCone", 0.91f);
+        shader.setFloat("light.outerCone", 0.82f);
+        shader.setFloat("light.constant", 1.0f);
+        shader.setFloat("light.linear", 0.045f);
+        shader.setFloat("light.quadratic", 0.0075f);
+
         // material properties
         shader.setFloat("material.shininess", 64.0f);
-
         camera.Matrix(shader, "view", "projection");
-        shader.setVec3("lightPosition", lightPos);
 
         VAO1.Bind();
         texture0.Bind();
