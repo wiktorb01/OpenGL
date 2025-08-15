@@ -109,10 +109,10 @@ GLuint lightIndices[] =
 
 glm::vec3 lightPositions[] =
 {
-    glm::vec3(-1.0f, -4.0f, -3.0f),
-    glm::vec3(4.0f, -3.0f, -2.0f),
-    glm::vec3(0.0f, 0.0f, -2.0f),
-    glm::vec3(-2.0f, 5.0f, -7.0f)
+    glm::vec3(0.7f,  0.2f,  2.0f),
+    glm::vec3(2.3f, -3.3f, -4.0f),
+    glm::vec3(-4.0f,  2.0f, -12.0f),
+    glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
 // Materials - Ambient components (RGB)
@@ -261,12 +261,12 @@ int main()
     {
         str = char(i + 48);
         shader.setVec3("light[" + str + "].color", 1.0f, 1.0f, 1.0f);
-        shader.setVec3("light[" + str + "].ambient", 0.2f, 0.2f, 0.2f);
-        shader.setVec3("light[" + str + "].diffuse", 0.5f, 0.5f, 0.5f);
+        shader.setVec3("light[" + str + "].ambient", 0.4f, 0.4f, 0.4f);
+        shader.setVec3("light[" + str + "].diffuse", 0.7f, 0.7f, 0.7f);
         shader.setVec3("light[" + str + "].specular", 1.0f, 1.0f, 1.0f);
         shader.setFloat("light[" + str + "].constant", 1.0f);
-        shader.setFloat("light[" + str + "].linear", 0.14f);
-        shader.setFloat("light[" + str + "].quadratic", 0.07f);
+        shader.setFloat("light[" + str + "].linear", 0.09f);
+        shader.setFloat("light[" + str + "].quadratic", 0.032f);
     }
 
     Camera camera(SCR_WIDTH, SCR_HEIGHT, 60.0f, glm::vec3(0.0f, 0.0f, 3.0f));
