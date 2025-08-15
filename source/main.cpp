@@ -1,7 +1,5 @@
 // main.cpp - Entry point for the OpenGL application
 // This file sets up the OpenGL context, loads shaders, textures, and handles rendering and input.
-
-
 #include <iostream>
 
 #include "VBO.h"
@@ -15,6 +13,10 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // Handles keyboard and mouse input
 void processInput(GLFWwindow* window);
+bool isF = 0;
+bool isSun = 0;
+bool flashlight = 1;
+bool sun = 1;
 
 // Window settings
 unsigned int SCR_WIDTH = 800;
@@ -103,6 +105,14 @@ GLuint lightIndices[] =
     0,4,6, 0,6,2,
     0,1,4, 1,4,5,
     2,3,6, 3,6,7
+};
+
+glm::vec3 lightPositions[] =
+{
+    glm::vec3(-1.0f, -4.0f, -3.0f),
+    glm::vec3(4.0f, -3.0f, -2.0f),
+    glm::vec3(0.0f, 0.0f, -2.0f),
+    glm::vec3(-2.0f, 5.0f, -7.0f)
 };
 
 // Materials - Ambient components (RGB)
@@ -201,7 +211,6 @@ int main()
     Texture texture1("./Resources/Textures/container2_specular.png", 1);
     shader.setInt("material.diffuse", 0);
     shader.setInt("material.specular", 1);
-    glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, -2.0f);
 
 
     // Create VAO and VBO, and link vertex attributes
@@ -229,7 +238,36 @@ int main()
     lightEBO.Unbind();
     lightShader.Activate();
     
-    
+    // Setting up light
+    shader.Activate();
+    // Flashlight settings
+    shader.setVec3("flash.ambient", 0.2f, 0.2f, 0.2f);
+    shader.setVec3("flash.diffuse", 0.9f, 0.9f, 0.9f);
+    shader.setVec3("flash.specular", 1.0f, 1.0f, 1.0f);
+    shader.setVec3("flash.posOffset", 0.0f, 0.0f, -0.1f);
+    shader.setVec3("flash.direction", 0.0f, 0.0f, -1.0f);
+    shader.setFloat("flash.innerCone", 0.91f);
+    shader.setFloat("flash.outerCone", 0.82f);
+    shader.setFloat("flash.constant", 1.0f);
+    shader.setFloat("flash.linear", 0.045f);
+    shader.setFloat("flash.quadratic", 0.0075f);
+    // Sunlight settings
+    shader.setVec3("sun.ambient", 0.2f, 0.2f, 0.2f);
+    shader.setVec3("sun.diffuse", 0.65f, 0.65f, 0.65f);
+    shader.setVec3("sun.specular", 1.0f, 1.0f, 1.0f);
+    // Pointlight settings
+    std::string str = "";
+    for (int i = 0; i < 4; i++)
+    {
+        str = char(i + 48);
+        shader.setVec3("light[" + str + "].color", 1.0f, 1.0f, 1.0f);
+        shader.setVec3("light[" + str + "].ambient", 0.2f, 0.2f, 0.2f);
+        shader.setVec3("light[" + str + "].diffuse", 0.5f, 0.5f, 0.5f);
+        shader.setVec3("light[" + str + "].specular", 1.0f, 1.0f, 1.0f);
+        shader.setFloat("light[" + str + "].constant", 1.0f);
+        shader.setFloat("light[" + str + "].linear", 0.14f);
+        shader.setFloat("light[" + str + "].quadratic", 0.07f);
+    }
 
     Camera camera(SCR_WIDTH, SCR_HEIGHT, 60.0f, glm::vec3(0.0f, 0.0f, 3.0f));
 
@@ -242,6 +280,7 @@ int main()
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
         // Handle input
         processInput(window);
         camera.Inputs(window, deltaTime);
@@ -251,46 +290,50 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+        // lightning
         shader.Activate();
-        // light properties
-        shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        shader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
-        shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        shader.setVec3("light.position", 0.0f, 0.0f, -0.1f);
-        shader.setVec3("light.direction", 0.0f, 0.0f, -1.0f);
-        shader.setFloat("light.innerCone", 0.91f);
-        shader.setFloat("light.outerCone", 0.82f);
-        shader.setFloat("light.constant", 1.0f);
-        shader.setFloat("light.linear", 0.045f);
-        shader.setFloat("light.quadratic", 0.0075f);
+        // flashlight
+        shader.setBool("flash.isOn", isF);
+        // sun
+        shader.setBool("sun.isOn", isSun);
+        glm::vec3 sunDir = glm::vec3(-0.2f, 1.0f, 0.4f);
+        sunDir = glm::vec3(camera.view * glm::vec4(sunDir, 0.0f));
+        shader.setVec3("sun.direction", sunDir);
+        // point lights
+        for (int i = 0; i < 4; i++)
+        {
+            glm::vec3 lightPos = glm::vec3(camera.view * glm::vec4(lightPositions[i], 1.0f));
+            str = (char)(i + 48);
+            shader.setVec3("light[" + str + "].position", lightPos);
+        }
 
         // material properties
         shader.setFloat("material.shininess", 64.0f);
         camera.Matrix(shader, "view", "projection");
-
+        // Objects 1
         VAO1.Bind();
         texture0.Bind();
         texture1.Bind();
-        // Draw 10 cubes with different positions and rotations
         for (unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             shader.setMat4("model", model);
-            // Draw the cube using glDrawArrays
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
         // Light
         lightShader.Activate();
         lightVAO.Bind();
-
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, lightPos);
-        lightShader.setMat4("lightModel", lightModel);
-
         camera.Matrix(lightShader, "view", "projection");
-        glDrawElements(GL_TRIANGLES, sizeof(lightIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        for (int i = 0; i < 4; i++)
+        {
+            glm::mat4 lightModel = glm::mat4(1.0f);
+            lightModel = glm::translate(lightModel, lightPositions[i]);
+            lightShader.setMat4("lightModel", lightModel);
+            glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        }
+
         // Swap buffers and poll IO events
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -310,9 +353,21 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && flashlight)
+    {
+        flashlight = 0;
+        isF = !isF;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE)
+        flashlight = 1;
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && sun)
+    {
+        sun = 0;
+        isSun = !isSun;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE)
+        sun = 1;
 }
-
 
 // Callback for window resize to update viewport and window size variables
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
