@@ -41,13 +41,16 @@
     <ClCompile Include="Libraries\Classes\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Classes\Texture.cpp">
+    <ClCompile Include="Libraries\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\Classes\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Libraries\Classes\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Classes\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,7 +67,7 @@
     <ClInclude Include="Libraries\Classes\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\Classes\Texture.h">
+    <ClInclude Include="Libraries\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\include\stb\stb_image.h">
@@ -73,7 +76,10 @@
     <ClInclude Include="Libraries\Classes\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="Libraries\Classes\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Classes\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

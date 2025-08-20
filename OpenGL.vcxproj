@@ -162,7 +162,7 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="Libraries\Classes\VBO.cpp" />
     <ClCompile Include="Libraries\Classes\VAO.cpp" />
-    <ClCompile Include="Libraries\Classes\Texture.cpp" />
+    <ClCompile Include="Libraries\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Classes\Camera.h" />
@@ -170,7 +170,7 @@
     <ClInclude Include="Libraries\Classes\VBO.h" />
     <ClInclude Include="Libraries\Classes\VAO.h" />
     <ClInclude Include="Libraries\Classes\Shader.h" />
-    <ClInclude Include="Libraries\Classes\Texture.h" />
+    <ClInclude Include="Libraries\Texture.h" />
     <ClInclude Include="Libraries\include\stb\stb_image.h" />
     <ClInclude Include="Libraries\Classes\Mesh.h" />
     <ClInclude Include="Libraries\Classes\Model.h" />

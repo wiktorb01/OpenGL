@@ -17,7 +17,8 @@ unsigned int SCR_HEIGHT = 600;
 // Camera and view settings 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
+// lightning
+bool firstF = 1, isF = 0;
 
 int main()
 {
@@ -50,11 +51,23 @@ int main()
         return -1;
     }
     stbi_set_flip_vertically_on_load(true);
-    // Cubes
     // Create and activate shader program
     Shader shader("./Resources/Shaders/default.vert", "./Resources/Shaders/default.frag");
+
+    // Lightning
     shader.Activate();
-   
+    // Flashlight
+    shader.setVec3("flash.ambient", 0.2f, 0.2f, 0.2f);
+    shader.setVec3("flash.diffuse", 0.9f, 0.9f, 0.9f);
+    shader.setVec3("flash.specular", 1.0f, 1.0f, 1.0f);
+    shader.setVec3("flash.posOffset", 0.0f, 0.0f, -0.1f);
+    shader.setVec3("flash.direction", 0.0f, 0.0f, -1.0f);
+    shader.setFloat("flash.innerCone", 0.91f);
+    shader.setFloat("flash.outerCone", 0.82f);
+    shader.setFloat("flash.constant", 1.0f);
+    shader.setFloat("flash.linear", 0.045f);
+    shader.setFloat("flash.quadratic", 0.0075f);
+
     Camera camera(SCR_WIDTH, SCR_HEIGHT, 60.0f, glm::vec3(0.0f, 0.0f, 3.0f));
     Model backpack("./Resources/Models/backpack/backpack.obj");
     // Enable depth testing for 3D rendering
@@ -83,6 +96,9 @@ int main()
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
         shader.setMat4("model", model);
+        // Lightning
+        shader.setBool("flash.isOn", isF);
+
         backpack.Draw(shader);
 
         // Swap buffers and poll IO events
@@ -98,7 +114,17 @@ int main()
 // Handles keyboard and mouse input for camera movement and texture mixing
 void processInput(GLFWwindow* window)
 {
-    
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && firstF)
+    {
+        firstF = 0;
+        isF = !isF;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE)
+    {
+        firstF = 1;
+    }
 }
 
 // Callback for window resize to update viewport and window size variables
