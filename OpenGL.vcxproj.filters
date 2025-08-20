@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="Resources\Shaders\default.vert" />
     <None Include="Resources\Shaders\default.frag" />
+    <None Include="source\assimp-vc143-mtd.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -46,6 +47,9 @@
     <ClCompile Include="Libraries\Classes\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Classes\VBO.h">
@@ -67,6 +71,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Classes\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -48,8 +48,6 @@ Texture::Texture(const char* path, GLuint slot)
 
 void Texture::useTex(Shader& shader, const char* uniform)
 {
-    // Activate shader before setting uniform
-    shader.Activate();
     // Set the texture uniform value
     shader.setInt(uniform, unit);
 }
