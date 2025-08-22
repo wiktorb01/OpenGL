@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 // Camera constructor: sets initial width, height, and position
-Camera::Camera(unsigned int width,unsigned int height, float FOV, glm::vec3 position)
+Camera::Camera(unsigned int width, unsigned int height, float FOV, glm::vec3 position)
 {
 	Camera::FOV = FOV;
     normalFOV = FOV;
@@ -11,7 +11,7 @@ Camera::Camera(unsigned int width,unsigned int height, float FOV, glm::vec3 posi
 }
 
 // Sets the combined projection and view matrix in the shader
-void Camera::updateMatrix(float nearPlane, float farPlane)
+void Camera::updateMatrix(float nearPlane, float farPlane, unsigned int width, unsigned int height)
 {
     view = glm::mat4(1.0f);
     projection = glm::mat4(1.0f);
