@@ -1,6 +1,7 @@
 // main.cpp - Entry point for the OpenGL application
 // This file sets up the OpenGL context, loads shaders, textures, and handles rendering and input.
 #include <iostream>
+#include <map>
 
 #include "VBO.h"
 #include "VAO.h"
@@ -13,10 +14,14 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // Handles keyboard and mouse input
 void processInput(GLFWwindow* window);
+<<<<<<< Updated upstream
 bool isF = 0;
 bool isSun = 0;
 bool flashlight = 1;
 bool sun = 1;
+=======
+unsigned int loadTexture(const char* path, GLenum texture_wrap_s = GL_REPEAT, GLenum texture_wrap_t = GL_REPEAT);
+>>>>>>> Stashed changes
 
 // Window settings
 unsigned int SCR_WIDTH = 800;
@@ -170,6 +175,17 @@ float materialShininess[] = {
     76.8f,        // chrome (0.6 * 128)
     12.8f         // copper (0.1 * 128)
 };
+float grassVertices[] = {
+    // positions         // texture Coords 
+	1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	1.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+	0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+	0.0f,  0.0f,  0.0f,  0.0f, 0.0f
+};
+GLuint grassIndices[] = {
+    0, 1, 2,
+    0, 2, 3
+};
 
 int main()
 {
@@ -201,8 +217,19 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+<<<<<<< Updated upstream
 
     // Cubes
+=======
+    stbi_set_flip_vertically_on_load(true);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+>>>>>>> Stashed changes
     // Create and activate shader program
     Shader shader("./Resources/Shaders/default.vert", "./Resources/Shaders/default.frag");
     shader.Activate();
@@ -224,7 +251,40 @@ int main()
     VAO1.LinkAttrib(VBO1, 3, 2, GL_FLOAT, 11 * sizeof(float), (void*)(9 * sizeof(float))); // Texture coordinate attribute
     VAO1.Unbind();
     VBO1.Unbind();
+<<<<<<< Updated upstream
     //EBO.Unbind();
+=======
+	// Plane
+	VAO VAO2;
+	VAO2.Bind();
+	VBO VBO2(planeVertices, sizeof(planeVertices));
+	VAO2.LinkAttrib(VBO2, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
+	VAO2.LinkAttrib(VBO2, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO2.Unbind();
+	VBO2.Unbind();
+    // Grass
+    std::vector<glm::vec3> windows;
+    windows.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
+    windows.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
+    windows.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
+    windows.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
+    windows.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
+	VAO grassVAO;
+	grassVAO.Bind();
+	VBO grassVBO(grassVertices, sizeof(grassVertices));
+    EBO grassEBO(grassIndices, sizeof(grassIndices));
+	grassVAO.LinkAttrib(grassVBO, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
+	grassVAO.LinkAttrib(grassVBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	grassVAO.Unbind();
+    grassEBO.Unbind();
+	grassVBO.Unbind();
+    // textures
+    unsigned int cubeTexture = loadTexture("./Resources/Textures/marble.jpg");
+	unsigned int floorTexture = loadTexture("./Resources/Textures/metal.jpg");
+	unsigned int grassTexture = loadTexture("./Resources/Textures/blending_transparent_window.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+    shader.Activate();
+    shader.setInt("texture1", 0);
+>>>>>>> Stashed changes
 
     // Light
     Shader lightShader("./Resources/Shaders/light.vert", "./Resources/Shaders/light.frag");
@@ -290,6 +350,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+<<<<<<< Updated upstream
         // lightning
         shader.Activate();
         // flashlight
@@ -333,6 +394,58 @@ int main()
             lightShader.setMat4("lightModel", lightModel);
             glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
         }
+=======
+
+        // Drawing commands
+        shader.Activate();
+        camera.Matrix(shader, "view", "projection");
+        glm::mat4 model;
+        // Floor 
+        glStencilMask(0x00); // make sure we don't update the stencil buffer while drawing the floor
+        VAO2.Bind();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -0.001f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        VAO2.Unbind();
+        
+        // Cubes 
+        // 1st. render pass, draw objects as normal, writing to the stencil buffer
+        // --------------------------------------------------------------------
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+        VAO1.Bind();
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f)); // translate it down so it's at the center of the scene
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        VAO1.Unbind();
+        // Grass
+        grassVAO.Bind();
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+		std::map<float, glm::vec3> sorted;
+        for (unsigned int i = 0; i < windows.size(); i++)
+        {
+            float distance = glm::length(camera.camPos - windows[i]);
+            sorted[distance] = windows[i];
+        }
+        for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
+        {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(it->second.x, it->second.y - 0.5f, it->second.z));
+            shader.setMat4("model", model);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        }
+        grassVAO.Unbind();
+
+>>>>>>> Stashed changes
 
         // Swap buffers and poll IO events
         glfwSwapBuffers(window);
@@ -375,4 +488,43 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
     SCR_HEIGHT = height;
     SCR_WIDTH = width;
+<<<<<<< Updated upstream
+=======
+}
+
+// Texture loading utility function
+unsigned int loadTexture(const char* path, GLenum texture_wrap_s, GLenum texture_wrap_t)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
+        else 
+            throw std::runtime_error("Unsupported number of channels in texture image");
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_wrap_s);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_wrap_t);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+	return textureID;
+>>>>>>> Stashed changes
 }

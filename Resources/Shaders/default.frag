@@ -62,6 +62,7 @@ uniform DirLight sun;
 uniform PointLight light[4];
 
 
+<<<<<<< Updated upstream
 vec3 flashlight(Flashlight light)
 {
     if(!light.isOn) return vec3(0.0f);
@@ -94,6 +95,11 @@ vec3 flashlight(Flashlight light)
     {  
         return light.ambient * attenuation * texture(material.diffuse, TexCoord).rgb;
     }
+=======
+void main()
+{
+    FragColor = texture(texture1, TexCoords);
+>>>>>>> Stashed changes
 }
 
 vec3 sunlight(DirLight sun)
