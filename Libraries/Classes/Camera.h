@@ -29,7 +29,7 @@ public:
 
 	Camera(unsigned int width, unsigned int height, float FOV, glm::vec3 position);
 
-	void updateMatrix(float nearPlane, float farPlane);
+	void updateMatrix(float nearPlane, float farPlane, unsigned int width, unsigned int height);
 	void Matrix(Shader& shader, const char* uniform, const char* uniform1);
 	void Inputs(GLFWwindow* window, float deltaTime);
 };

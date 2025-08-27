@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="Resources\Shaders\default.vert" />
     <None Include="Resources\Shaders\default.frag" />
+    <None Include="source\assimp-vc143-mtd.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -40,10 +41,13 @@
     <ClCompile Include="Libraries\Classes\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Classes\Texture.cpp">
+    <ClCompile Include="Libraries\Classes\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Classes\Camera.cpp">
+    <ClCompile Include="Libraries\Classes\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Classes\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,13 +64,16 @@
     <ClInclude Include="Libraries\Classes\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\Classes\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\include\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Classes\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Classes\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Classes\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
