@@ -98,7 +98,6 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;unit.lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +114,6 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;unit.lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,7 +128,6 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;unit.lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,22 +144,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;unit.lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Libraries\assimp-vc143-mtd.dll" />
-    <None Include="Libraries\assimp-vc143-mtd.pdb" />
-    <None Include="Libraries\lib\assimp-vc143-mtd.exp" />
-    <None Include="Libraries\lib\unit.exp" />
-    <None Include="Libraries\unit.exe" />
-    <None Include="Libraries\unit.pdb" />
     <None Include="Resources\Shaders\default.frag" />
     <None Include="Resources\Shaders\default.vert" />
     <None Include="source\assimp-vc143-mtd.dll" />
-    <None Include="source\assimp-vc143-mtd.pdb" />
-    <None Include="source\unit.exe" />
-    <None Include="source\unit.pdb" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Libraries\Classes\Camera.cpp" />
@@ -185,11 +172,6 @@
     <ClInclude Include="Libraries\include\stb\stb_image.h" />
     <ClInclude Include="Libraries\Classes\Mesh.h" />
     <ClInclude Include="Libraries\Classes\Model.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Libraries\lib\assimp-vc143-mtd.lib" />
-    <Library Include="Libraries\lib\glfw3.lib" />
-    <Library Include="Libraries\lib\unit.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
