@@ -17,7 +17,16 @@
   <ItemGroup>
     <None Include="Resources\Shaders\default.vert" />
     <None Include="Resources\Shaders\default.frag" />
+    <None Include="Libraries\lib\unit.exp" />
+    <None Include="Libraries\lib\assimp-vc143-mtd.exp" />
+    <None Include="source\unit.exe" />
+    <None Include="source\unit.pdb" />
+    <None Include="source\assimp-vc143-mtd.pdb" />
     <None Include="source\assimp-vc143-mtd.dll" />
+    <None Include="Libraries\unit.exe" />
+    <None Include="Libraries\unit.pdb" />
+    <None Include="Libraries\assimp-vc143-mtd.pdb" />
+    <None Include="Libraries\assimp-vc143-mtd.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -76,5 +85,10 @@
     <ClInclude Include="Libraries\Classes\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Libraries\lib\glfw3.lib" />
+    <Library Include="Libraries\lib\assimp-vc143-mtd.lib" />
+    <Library Include="Libraries\lib\unit.lib" />
   </ItemGroup>
 </Project>
